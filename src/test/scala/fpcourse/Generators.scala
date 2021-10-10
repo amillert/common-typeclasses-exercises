@@ -1,6 +1,7 @@
 package fpcourse
 
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.Arbitrary
+import cats.implicits._
 
 trait Generators {
 
@@ -10,7 +11,7 @@ trait Generators {
     * Simple solutions should be enough.
     */
   implicit def arbFun[A](implicit arbA: Arbitrary[A]): Arbitrary[A => A] =
-    ???
+    Arbitrary(arbA.arbitrary.map(x => _ => x))
 
   /** TODO 11
     * Instance of Arbitrary for the Get monad.
@@ -22,5 +23,5 @@ trait Generators {
     *   you should simulate actual 'consumption' of the bytes.
     */
   implicit def arbGet[A](implicit arbA: Arbitrary[A]): Arbitrary[Get[A]] =
-    ???
+    Arbitrary(arbA.arbitrary.map(a => Get.skip(4).map(_ => a)))
 }
